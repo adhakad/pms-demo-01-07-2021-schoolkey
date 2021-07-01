@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <h2 class="text-center">Admin login</h2>
+        <div id="signupbox" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title"> Admin login <div style="color: #000;" id="postResultDiv">
+                    </div></div>
+                     </div> 
+                <div class="panel-body">
+                  <form id="userForm" class="form-horizontal"  role="form">                              
+                    <div class="form-group">
+                      <label for="key" class="col-md-3 control-label">Product Key</label>
+                      <div class="col-md-9">
+                          <input type="key" class="form-control" id="key" placeholder="Enter Your Product Key...">
+                      </div>
+                  </div>
+                    
+                  <div class="form-group">
+                      <label for="school_key" class="col-md-3 control-label">School Key</label>
+                      <div class="col-md-9">
+                          <input type="text" class="form-control" id="school_key" placeholder="School Key...">
+                      </div>
+                  </div>  
+                  <div class="form-group">                                      
+                      <div class="col-md-offset-3 col-md-9">
+                      <input type="submit" name="submit" value="login" class="btn btn-primary">   
+                      </div>
+                  </div>
+                  
+                  
+                </form>
+                </div>
+            </div>        
+          </div> 
+        </div>
+    </div>
+
+
+<script>
+  $( document ).ready(function() {
+  
+  // SUBMIT FORM
+    $("#userForm").submit(function(event) {
+    // Prevent the form from submitting via the browser.
+    event.preventDefault();
+    ajaxPost();
+  });
+    
+    
+    function ajaxPost(){
+      
+      // PREPARE FORM DATA
+      var formData = {
+        key : $("#key").val(),
+        school_key : $("#school_key").val(),
+      }
+      
+      // DO POST
+      $.ajax({
+      type : "POST",
+      contentType : "application/json",
+      url : window.location + "/post",
+      data : JSON.stringify(formData),
+      dataType : 'json',
+      success : function(result, status, xhr) { 
+        if(result.redirectTo){
+          $("#postResultDiv").html("<p>"+result.redirectTo+"</p>");
+        }else if(result.redirect){
+          window.location.href = result.redirect
+        }
+      },
+
+      error : function(e) {
+        $("#postResultDiv").html("<p>" + "Post Already Exist On MongoDB Database! <br>" +"</p>"); 
+      }
+    })
+        
+      // Reset FormData after Posting
+      resetData();
+
+    }
+
+    function resetData(){
+        $("#key").val("");
+        $("#school_key").val("");
+      }
+})
+</script>
+
+  </body>
+</html>
